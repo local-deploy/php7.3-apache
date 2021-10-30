@@ -33,15 +33,19 @@ RUN set -ex && \
         curl \
         ssmtp \
         wget \
+        git \
         nano \
         mariadb-client \
     && rm -rf /var/lib/apt/lists/*
 
 RUN pecl install xdebug-3.1.1 \
-    && docker-php-ext-enable xdebug \
+    && pecl install memcached-3.1.5 \
+    && pecl install redis \
+    && docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd \
+    && docker-php-ext-configure mysqli --with-mysqli=mysqlnd \
     && docker-php-ext-configure opcache --enable-opcache \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) mysqli pdo_mysql exif pcntl bcmath gd soap zip opcache
+    && docker-php-ext-install -j$(nproc) mysqli pdo_mysql exif pcntl bcmath mbstring gd soap zip opcache sockets
 
 RUN wget https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar -O /usr/local/bin/composer && \
     chmod a+rx /usr/local/bin/composer
@@ -54,11 +58,16 @@ RUN mkdir /var/www/.composer && \
     mkdir /var/www/.ssh
 
 RUN chown www-data:www-data /var/www -R && \
+    chown www-data:www-data /usr/local/etc/php/conf.d -R && \
     chown www-data:www-data /var/www/.composer && \
     chown www-data:www-data /var/www/.ssh
 
-COPY ./php.ini /usr/local/etc/php
-COPY ./ssmtp.conf /etc/ssmtp/
-COPY ./.bashrc /var/www/
+COPY php.ini /usr/local/etc/php
+COPY ssmtp.conf /etc/ssmtp/
+COPY .bashrc /var/www/
+COPY docker-entrypoint.sh /entrypoint.sh
 
+WORKDIR /var/www
 USER www-data:www-data
+
+ENTRYPOINT ["/entrypoint.sh"]
