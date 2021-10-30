@@ -4,4 +4,3 @@
 - memcached
 - gid/uid
 - default ServerName
-
