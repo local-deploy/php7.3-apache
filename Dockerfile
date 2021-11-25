@@ -3,7 +3,6 @@ FROM php:7.3-apache
 LABEL maintainer="dl@varme.pw"
 
 ENV TZ=Europe/Moscow
-ENV DOCUMENT_ROOT /var/www/html
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
@@ -61,6 +60,14 @@ RUN chown www-data:www-data /var/www -R && \
     chown www-data:www-data /usr/local/etc/php/conf.d -R && \
     chown www-data:www-data /var/www/.composer && \
     chown www-data:www-data /var/www/.ssh
+
+RUN echo 'DocumentRoot ${DOCUMENT_ROOT}' >> /etc/apache2/apache2.conf && \
+    echo 'ServerName ${HOST_NAME}' > /etc/apache2/conf-enabled/default.conf && \
+    echo 'ServerSignature Off' > /etc/apache2/conf-enabled/z-security.conf && \
+    echo 'ServerTokens Minimal' >> /etc/apache2/conf-enabled/z-security.conf && \
+    rm /etc/apache2/sites-enabled/000-default.conf
+
+RUN a2enmod rewrite
 
 COPY php.ini /usr/local/etc/php
 COPY ssmtp.conf /etc/ssmtp/
