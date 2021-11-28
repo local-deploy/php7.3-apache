@@ -11,12 +11,9 @@ ARG COMPOSER_VERSION="2.1.9"
 RUN set -ex && \
     apt-get update && apt-get install -y --no-install-recommends \
         software-properties-common \
-        git \
-        zip \
-        apache2 \
         libfreetype6-dev \
+        libjpeg62-turbo-dev \
         libpng-dev \
-        libjpeg-dev \
         libgmp-dev \
         libxml2-dev \
         zlib1g-dev \
@@ -34,6 +31,7 @@ RUN set -ex && \
         wget \
         git \
         nano \
+        zip \
         mariadb-client \
     && rm -rf /var/lib/apt/lists/*
 
