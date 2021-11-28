@@ -26,6 +26,7 @@ RUN set -ex && \
         libssl-dev \
         libsqlite3-dev \
         libzip-dev \
+        libonig-dev \
         curl \
         ssmtp \
         wget \
