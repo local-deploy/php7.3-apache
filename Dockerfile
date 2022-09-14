@@ -43,7 +43,7 @@ RUN pecl install xdebug-3.1.1 \
     && docker-php-ext-configure mysqli --with-mysqli=mysqlnd \
     && docker-php-ext-configure opcache --enable-opcache \
     && docker-php-ext-configure gd --with-freetype-dir=/usr/include/ --with-jpeg-dir=/usr/include/ \
-    && docker-php-ext-install -j$(nproc) mysqli pdo_mysql exif pcntl bcmath mbstring gd soap zip opcache sockets
+    && docker-php-ext-install -j$(nproc) mysqli pdo_mysql exif pcntl intl gmp bcmath mbstring gd soap zip opcache sockets
 
 RUN wget https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar -O /usr/local/bin/composer && \
     chmod a+rx /usr/local/bin/composer
